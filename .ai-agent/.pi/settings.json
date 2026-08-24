@@ -1,0 +1,10 @@
+{
+  "ignoreDirs": [
+    "node_modules",
+    ".git",
+    "dist",
+    ".bun",
+    "docs",
+    "apps"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "project-builder",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+      "rebuild:pi-sandbox": "docker build -f Dockerfile.pi -t bun-agent-sandbox .",
+      "agent:pull-docs": "bun run .ai-agent/scripts/scraper/run.ts",
+      "agent:sync-all": "bun run .ai-agent/scripts/scraper/batch-update.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "langchain": "^1.5.10",
+    "turbo": "^2.10.10"
+  },
+  "packageManager": "bun",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}

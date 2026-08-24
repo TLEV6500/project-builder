@@ -1,0 +1,18 @@
+FROM oven/bun:1-alpine
+
+# 1. Install system utilities and network tools as root
+RUN apk add --no-cache bash git curl wget
+
+# 2. Configure Bun global paths at the system level
+ENV BUN_INSTALL="/usr/local"
+ENV NODE_PATH="/usr/local/install/global/node_modules"
+ENV PATH="$BUN_INSTALL/bin:$PATH"
+
+# 3. Install the packages globally as root (bypasses EACCES entirely)
+RUN bun add -g @mariozechner/pi-coding-agent@latest pi-web-access
+
+# 4. Set the project folder boundary
+WORKDIR /workspace
+
+# 5. Drop permissions down to the restricted user for runtime isolation
+USER bun

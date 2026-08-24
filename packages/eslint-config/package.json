@@ -1,0 +1,34 @@
+{
+    "name": "@tlev/eslint",
+    "version": "0.0.0",
+    "type": "module",
+    "private": true,
+    "exports": {
+        "./base": {
+            "types": "./base.ts",
+            "default": "./base.ts"
+        },
+        "./elysia": {
+            "types": "./elysia.ts",
+            "default": "./elysia.ts"
+        },
+        "./astro": {
+            "types": "./astro.ts",
+            "default": "./astro.ts"
+        }
+    },
+    "devDependencies": {
+        "@types/bun": "^1.3.14",
+        "typescript": "^5.9.2"
+    },
+    "dependencies": {
+        "@eslint/js": "^9.39.5",
+        "astro-eslint-parser": "^3.0.0",
+        "eslint": "^10.8.0",
+        "eslint-plugin-astro": "^3.1.0",
+        "eslint-plugin-jsx-a11y": "^6.10.2",
+        "eslint-plugin-turbo": "^2.7.1",
+        "globals": "^17.9.0",
+        "typescript-eslint": "^8.66.0"
+    }
+}

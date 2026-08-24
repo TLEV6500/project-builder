@@ -1,0 +1,47 @@
+{
+    "$schema": "https://turborepo.dev/schema.json",
+    "ui": "tui",
+    "tasks": {
+        "build": {
+            "dependsOn": [
+                "^build"
+            ],
+            "outputs": [
+                "dist/**",
+                ".astro/**"
+            ],
+            "env": [
+                "USING_LOCAL_MODEL",
+                "LOCAL_LLM_PROVIDER",
+                "LOCAL_LLM_MODEL",
+                "LOCAL_LLM_API_KEY",
+                "CLANKER_CEREBRO_INGEST_TOKEN"
+            ]
+        },
+        "test": {
+            "dependsOn": [
+                "build"
+            ],
+            "outputs": [],
+            "inputs": [
+                "src/**/*",
+                "package.json"
+            ]
+        },
+        "deploy": {
+            "dependsOn": [
+                "build"
+            ],
+            "cache": false
+        },
+        "lint": {
+            "dependsOn": [
+                "^lint"
+            ]
+        },
+        "dev": {
+            "cache": false,
+            "persistent": true
+        }
+    }
+}
