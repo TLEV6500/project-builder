@@ -1,0 +1,14 @@
+# Ignore local package manager dependencies
+node_modules/
+.bun/
+.pi/
+
+# Ignore local version control and environmental secrets
+.git
+.env*
+*.local
+
+# Ignore build artifacts and OS junk files
+.DS_Store
+dist/
+build/

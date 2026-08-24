@@ -1,18 +1,29 @@
-FROM oven/bun:1-alpine
+FROM node:24-bookworm-slim
 
-# 1. Install system utilities and network tools as root
-RUN apk add --no-cache bash git curl wget
+# 1. Install standard system utilities needed by git extensions or tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    git \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# 2. Configure Bun global paths at the system level
-ENV BUN_INSTALL="/usr/local"
-ENV NODE_PATH="/usr/local/install/global/node_modules"
-ENV PATH="$BUN_INSTALL/bin:$PATH"
+# 2. Configure standard global npm paths inside the non-root 'node' user home directory
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+ENV PATH=$NPM_CONFIG_PREFIX/bin:$PATH
+ENV NODE_PATH=$NPM_CONFIG_PREFIX/lib/node_modules
 
-# 3. Install the packages globally as root (bypasses EACCES entirely)
-RUN bun add -g @mariozechner/pi-coding-agent@latest pi-web-access
+# 3. Create the workspace directory ahead of time
+RUN mkdir -p /workspace && chown -R node:node /workspace
 
-# 4. Set the project folder boundary
+# 4. Set the active boundary folder
 WORKDIR /workspace
 
-# 5. Drop permissions down to the restricted user for runtime isolation
-USER bun
+# 5. Drop permissions down to the secure, unprivileged 'node' user FIRST
+USER node
+
+# 6. Install the official coding agent globally inside the user's secure path
+RUN npm install -g @earendil-works/pi-coding-agent@latest
+
+# 7. Install your web access extension headlessly using a standard input pipe override
+RUN echo "" | pi install npm:pi-web-access
