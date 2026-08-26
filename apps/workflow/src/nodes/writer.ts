@@ -1,12 +1,10 @@
 import { BaseFields, CONFIGURABLE_MODEL_FIELDS } from "@/model";
 import { PrefixedConfigurables } from "@/model/types";
 import { WorkflowState, WorkflowUpdate } from "@/schemas";
-import { callModel } from "@/utils";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { RunnableConfig } from "@langchain/core/runnables";
-import { initChatModel } from "langchain"
-import * as logger from "@/utils/debugger"
-
+import * as fs from "fs/promises";
+import * as path from "path";
+import * as os from "os";
 
 export type WriterConfigFields = PrefixedConfigurables<"writer", BaseFields>
 
@@ -14,32 +12,55 @@ type WriterConfig = RunnableConfig & {
     configurable?: WriterConfigFields
 }
 
-
-const model = await initChatModel("qwen3.5:4b", {
-    modelProvider: "ollama",
-    configPrefix: "writer",
-    configurableFields: CONFIGURABLE_MODEL_FIELDS
-})
-
-
-const writerPrompt = ChatPromptTemplate.fromMessages([
-    ["system", "You are a computer science professor that will verify that the STUDENT has answered the PERSON's question correctly. If it wasn't correct or needs expanding on, provide your own answer in your own voice. Answer in no more than 7 sentences. Prepend your answer with the string `[PROFESSOR]: `"],
-    ["human", "{messages}"]
-])
-
-
 export const writerNode = async (state: WorkflowState, config: WriterConfig): Promise<WorkflowUpdate> => {
-    // console.log("Writer node running...");
-    // console.log("messages", state.messages)
+    if (!state.project.structure) {
+        return {
+            messages: [{ content: "No project structure found. Planner must run first.", role: "assistant" }]
+        }
+    }
 
-    const prompt = await writerPrompt.formatMessages({
-        messages: state.messages
-    })
+    // Create a secure temporary directory for the sandbox
+    const sandboxRoot = path.join(os.tmpdir(), `workflow-sandbox-${Date.now()}`);
+    await fs.mkdir(sandboxRoot, { recursive: true });
 
-    // logger.deferLog("config.configurable?.writer_streaming", config.configurable?.writer_streaming)
-    const response = await callModel(model, prompt, config, "writer")
+    try {
+        for (const item of state.project.structure) {
+            const fullPath = path.join(sandboxRoot, item.path);
 
-    return {
-        messages: [response]
+            if (item.type === "directory") {
+                await fs.mkdir(fullPath, { recursive: true });
+            } else {
+                await fs.mkdir(path.dirname(fullPath), { recursive: true });
+                if (item.content) {
+                    await fs.writeFile(fullPath, item.content);
+                } else {
+                    await fs.writeFile(fullPath, `// ${item.description}`);
+                }
+            }
+        }
+
+        return {
+            messages: [{ content: `Project files successfully created in sandbox: ${sandboxRoot}`, role: "assistant" }],
+            project: {
+                ...state.project,
+                sandbox: {
+                    status: "completed",
+                    rootPath: sandboxRoot,
+                    sessionId: `session-${Date.now()}`,
+                }
+            }
+        }
+    } catch (error: any) {
+        console.error("Writer Error:", error);
+        return {
+            messages: [{ content: `Error writing files: ${error.message}`, role: "assistant" }],
+            project: {
+                ...state.project,
+                sandbox: {
+                    status: "error",
+                    error: error.message,
+                }
+            }
+        }
     }
 };

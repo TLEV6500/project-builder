@@ -1,4 +1,4 @@
-import { StateGraph, START, END, PregelOptions } from "@langchain/langgraph";
+import { StateGraph, START, END } from "@langchain/langgraph";
 import { plannerNode, writerNode, publisherNode } from "@/nodes/index";
 import { WorkflowState, WorkflowStateSchema } from "@/schemas";
 import { PlannerConfigFields } from "../nodes/planner";
@@ -15,7 +15,6 @@ export type GraphConfig = RunnableConfig & {
     encoding: "text/event-stream"
 }
 
-
 export const createWorkflow = () => {
     console.log("Creating workflow...")
 
@@ -25,9 +24,15 @@ export const createWorkflow = () => {
         .addNode("publisher", publisherNode)
 
         .addEdge(START, "planner")
+        // In a real scenario, we would add a conditional edge here for user approval
+        // For now, we implement the logic requested but keep it as a flow that 
+        // the user can interrupt via LangGraph breakpoints.
         .addEdge("planner", "writer")
         .addEdge("writer", "publisher")
         .addEdge("publisher", END);
 
-    return workflow.compile();
+    return workflow.compile({
+        // Enable interrupts after the planner to allow user review of the blueprint
+        interruptBefore: ["writer"]
+    });
 };
