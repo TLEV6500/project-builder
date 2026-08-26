@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { DOCUMENTATION_MANIFEST } from './manifest';
-import { initializeConfig, validateMarkdownContent, processMarkdownContent } from './utils';
+import { initializeConfig, validateMarkdownContent, processAndWriteContent } from './utils';
 
 async function runBatchSync() {
     console.log("🚀 ==================================================");
@@ -35,14 +35,10 @@ async function runBatchSync() {
             fs.writeFileSync(masterPath, masterMarkdown, 'utf-8');
 
             // 4. Run the hybrid processing/crawling layer
-            const segments = await processMarkdownContent(masterMarkdown, config.name);
+            const fileCount = await processAndWriteContent(masterMarkdown, config);
 
             // 5. Write outputs out to local workspace storage
-            console.log(`💾 Flushing ${segments.length} data blocks into cache matrix...`);
-            for (const segment of segments) {
-                const segmentPath = path.join(config.outputDir, segment.filename);
-                fs.writeFileSync(segmentPath, segment.content, 'utf-8');
-            }
+            console.log(`💾 Flushing ${fileCount} data blocks into cache matrix...`);
 
             console.log(`✅ Sync Completed for: ${target.name}`);
 

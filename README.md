@@ -21,3 +21,7 @@ This project was created using `bun init` in bun v1.3.14. [Bun](https://bun.com)
 - `./packages/eslint-config` is the shared ESLint configuration used across the project
 - `./packages/typescript-config` is the shared TypeScript configuration used across the project
 - `./apps/workflow` is the main workflow application for the project
+
+## TODO
+- [ ] Extend crawler function to support crawling generated md files for further crawling (refer to crawler logic for existing edge cases)
+- [ ] Crawl https://cli.github.com/manual/

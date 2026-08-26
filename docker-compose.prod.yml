@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: local_user
+      POSTGRES_PASSWORD: local_password
+      POSTGRES_DB: my_app_dev
+
+  # Tests the actual multi-stage production build
+  web-prod:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile # Points directly to your production file
+      args:
+        APP_NAME: web
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres

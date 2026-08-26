@@ -27,3 +27,4 @@ RUN npm install -g @earendil-works/pi-coding-agent@latest
 
 # 7. Install your web access extension headlessly using a standard input pipe override
 RUN echo "" | pi install npm:pi-web-access
+RUN echo "" | pi install npm:pi-json-tools

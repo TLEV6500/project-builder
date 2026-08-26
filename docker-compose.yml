@@ -1,0 +1,17 @@
+services:
+  main-workflow:
+    image: oven/bun:1-alpine
+    working_dir: /app
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+    # Mount the ENTIRE monorepo root so turbo and bun workspaces work natively
+    volumes:
+      - .:/app
+      # Anonymous volume prevents local node_modules from conflicting with container binaries
+      - /app/node_modules
+    env_file:
+        - ./apps/workflow/.env
+    # Installs everything instantly using Bun's cache, then runs turbo hot-reloading
+    command: sh -c "bun install && bunx turbo dev --filter=main-workflow"

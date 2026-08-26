@@ -1,10 +1,12 @@
 {
-  "ignoreDirs": [
-    "node_modules",
-    ".git",
-    "dist",
-    ".bun",
-    "docs",
-    "apps"
-  ]
+    "ignoreDirs": [
+        "node_modules",
+        ".git",
+        "dist",
+        ".bun",
+        "docs",
+        "apps"
+    ],
+    "defaultProvider": "ollama",
+    "defaultModel": "qwen2.5-coder:latest"
 }
