@@ -8,6 +8,8 @@ import * as os from "os";
 export type WriterConfigFields = PrefixedConfigurables<"writer", BaseFields>
 
 export const writerNode = async (state: WorkflowState): Promise<WorkflowUpdate> => {
+    console.log("Writer node called")
+
     if (!state.project.structure) {
         return {
             messages: [{ content: "No project structure found. Planner must run first.", role: "assistant" }]

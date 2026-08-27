@@ -1,4 +1,4 @@
-import { StateGraph, START, END } from "@langchain/langgraph";
+import { StateGraph, START, END, MemorySaver } from "@langchain/langgraph";
 import { plannerNode, writerNode, publisherNode } from "@/nodes/index";
 import { WorkflowStateSchema } from "@/schemas";
 import { PlannerConfigFields } from "../nodes/planner";
@@ -15,7 +15,9 @@ export type GraphConfig = RunnableConfig & {
     encoding: "text/event-stream"
 }
 
-export const createWorkflow = () => {
+const checkpointer = new MemorySaver()
+
+export const createWorkflow = async () => {
     console.log("Creating workflow...")
 
     const workflow = new StateGraph(WorkflowStateSchema)
@@ -25,14 +27,14 @@ export const createWorkflow = () => {
 
         .addEdge(START, "planner")
         // In a real scenario, we would add a conditional edge here for user approval
-        // For now, we implement the logic requested but keep it as a flow that 
+        // For now, we implement the logic requested but keep it as a flow that
         // the user can interrupt via LangGraph breakpoints.
         .addEdge("planner", "writer")
         .addEdge("writer", "publisher")
         .addEdge("publisher", END);
 
     return workflow.compile({
-        // Enable interrupts after the planner to allow user review of the blueprint
+        checkpointer,
         interruptBefore: ["writer"]
     });
 };

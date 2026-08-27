@@ -2,10 +2,12 @@ import { BaseLanguageModel } from "@langchain/core/language_models/base";
 import { AIMessageChunk, BaseMessage } from "@langchain/core/messages";
 import { RunnableConfig } from "@langchain/core/runnables";
 import * as logger from "./debugger";
-import { CONFIGURABLE_FIELDS } from "@/model/types";
+import { CONFIGURABLE_FIELDS, prefixField } from "@/model/types";
 
 
 const modelOutputTokenCount = { response: 0, reasoning: 0 };
+
+let providerLogged = false;
 
 /**
  * 1. Repurposed Atomic Event Dispatcher
@@ -24,13 +26,20 @@ function dispatchChunkToken(chunk: AIMessageChunk, streamOption: "response" | "r
     // }
 
     // 3. Fallback check for systems utilizing structured content blocks array
+    //
+    if (!providerLogged && chunk.response_metadata?.model_provider) {
+        console.log(`\n\n[Stream Route Verified: ${chunk.response_metadata.model_provider}]\n`);
+        providerLogged = true; // Prevent logging on every subsequent token chunk
+    }
+    //
     if (Array.isArray(rawChunk.contentBlocks)) {
         for (const block of rawChunk.contentBlocks) {
             // logger.deferLog("block.type", block.type)
             // logger.deferLog("block", block)
 
             if (block.type === "reasoning" && block.reasoning) {
-                // logger.deferLog("block.reasoning", block.reasoning)
+                logger.deferLog("block.reasoning", block.reasoning)
+                logger.deferLog("process.stdout.write", process.stdout.write)
                 // logger.deferLog("[\"none\", \"response\"].includes(streamOption)", ["none", "response"].includes(streamOption))
                 // logger.deferLog("streamOption", streamOption)
                 if (["none", "response"].includes(streamOption)) {
@@ -44,7 +53,7 @@ function dispatchChunkToken(chunk: AIMessageChunk, streamOption: "response" | "r
                 }
             }
             else if (["text", "text-plain"].includes(block.type) && block.text) {
-                // logger.deferLog("block.text", block.text)
+                logger.deferLog("block.text", block.text)
                 if (modelOutputTokenCount.response === 0) {
                     process.stdout.write("\n\n")
                 }
@@ -96,7 +105,7 @@ async function consumeNodeModelStream(
 export async function callModel(modelInstance: BaseLanguageModel, messages: BaseMessage[], config: RunnableConfig, prefix?: string): Promise<string> {
     const streamOption: "response" | "reasoning" | "all" | "none" = config.configurable ? config.configurable[prefixField(prefix, CONFIGURABLE_FIELDS.STREAMING)] : "response"
     let finalResultText: string
-    console.write("\n\nThinking...")
+    console.log("\n\nThinking...")
     modelOutputTokenCount.response = modelOutputTokenCount.reasoning = 0
     if (streamOption === "none") {
         const chunk = await modelInstance.invoke(messages, config) as AIMessageChunk

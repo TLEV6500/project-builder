@@ -6,6 +6,8 @@ import { execSync } from "child_process";
 export type PublisherConfigFields = PrefixedConfigurables<"publisher", BaseFields>
 
 export const publisherNode = async (state: WorkflowState): Promise<WorkflowUpdate> => {
+    console.log("Publisher node called")
+
     const { project } = state;
     if (!project.sandbox?.rootPath) {
         return {
@@ -26,7 +28,7 @@ export const publisherNode = async (state: WorkflowState): Promise<WorkflowUpdat
 
         const visibility = project.isPrivate ? "--private" : "--public";
         // Use gh repo create with --source=. to link current dir and --push to push to remote
-        execSync(`gh repo create ${repoName} ${visibility} --source=. --push`, { stdio: "inherit" });
+        execSync(`gh repo create ${repoName} ${visibility} --source=. --push --description "${project.repoDescription || ''}"`, { stdio: "inherit" });
 
         return {
             messages: [{ content: `Project successfully published to GitHub as ${repoName}`, role: "assistant" }],

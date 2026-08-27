@@ -17,6 +17,8 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@langchain/langgraph": "^1.4.13",
+    "@langchain/langgraph-checkpoint-sqlite": "^1.0.4",
     "langchain": "^1.5.10",
     "turbo": "^2.10.10"
   },

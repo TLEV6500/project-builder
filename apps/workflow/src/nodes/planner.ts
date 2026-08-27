@@ -38,7 +38,7 @@ const plannerPrompt = ChatPromptTemplate.fromMessages([
     ["system", `You are an expert Software Architect. Your goal is to generate a detailed project blueprint based on the user's request.
 
     You must output your response as a valid JSON object that matches the following schema:
-    
+
     ${JSON.stringify(BlueprintSchema.shape).replace(/{/g, '{{').replace(/}/g, '}}')}
 
     The blueprint should include:
@@ -51,6 +51,7 @@ const plannerPrompt = ChatPromptTemplate.fromMessages([
 ])
 
 export const plannerNode = async (state: WorkflowState, config: PlannerConfig): Promise<WorkflowUpdate> => {
+    console.log("Planner node called")
     const prompt = await plannerPrompt.formatMessages({
         messages: state.messages.map(msg => msg.content)
     })
