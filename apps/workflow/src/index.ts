@@ -63,26 +63,26 @@ if (import.meta.main) {
         version: "v2",
         encoding: "text/event-stream",
         configurable: {
-            "planner_modelProvider": "ollama",
-            "planner_model": "qwen3.5:4b",
-            "planner_apiKey": "ollama",
-            "planner_baseUrl": "http://localhost:11434",
-            "planner_temperature": 0.1,
-            "planner_streaming": "response",
+            "planner_modelProvider": process.env.PLANNER_MODEL_PROVIDER || "ollama",
+            "planner_model": process.env.PLANNER_MODEL || "qwen3.5:4b",
+            "planner_apiKey": process.env.PLANNER_API_KEY || "ollama",
+            "planner_baseUrl": process.env.PLANNER_BASE_URL || "http://localhost:11434",
+            "planner_temperature": parseFloat(process.env.PLANNER_TEMPERATURE || "0.1"),
+            "planner_streaming": process.env.PLANNER_STREAMING || "response",
 
-            "writer_modelProvider": "ollama",
-            "writer_model": "qwen3.5:4b",
-            "writer_apiKey": "ollama",
-            "writer_baseUrl": "http://localhost:11434",
-            "writer_temperature": 0.1,
-            "writer_streaming": "response",
+            "writer_modelProvider": process.env.WRITER_MODEL_PROVIDER || "ollama",
+            "writer_model": process.env.WRITER_MODEL || "qwen3.5:4b",
+            "writer_apiKey": process.env.WRITER_API_KEY || "ollama",
+            "writer_baseUrl": process.env.WRITER_BASE_URL || "http://localhost:11434",
+            "writer_temperature": parseFloat(process.env.WRITER_TEMPERATURE || "0.1"),
+            "writer_streaming": process.env.WRITER_STREAMING || "response",
 
-            "publisher_modelProvider": "ollama",
-            "publisher_model": "qwen3.5:4b",
-            "publisher_apiKey": "ollama",
-            "publisher_baseUrl": "http://localhost:11434",
-            "publisher_temperature": 0.4,
-            "publisher_streaming": "response"
+            "publisher_modelProvider": process.env.PUBLISHER_MODEL_PROVIDER || "ollama",
+            "publisher_model": process.env.PUBLISHER_MODEL || "qwen3.5:4b",
+            "publisher_apiKey": process.env.PUBLISHER_API_KEY || "ollama",
+            "publisher_baseUrl": process.env.PUBLISHER_BASE_URL || "http://localhost:11434",
+            "publisher_temperature": parseFloat(process.env.PUBLISHER_TEMPERATURE || "0.4"),
+            "publisher_streaming": process.env.PUBLISHER_STREAMING || "response"
         }
     }
 
@@ -91,11 +91,11 @@ if (import.meta.main) {
     try {
         // We use .invoke, but since we have interrupts, we need to handle the state
         // For a CLI, we may need to loop through the graph execution
-        let currentState = initialState;
-        let configWithThread = { ...config, configurable: { ...config.configurable, thread_id: "cli-session" } };
+        const currentState = initialState;
+        const configWithThread = { ...config, configurable: { ...config.configurable, thread_id: "cli-session" } };
 
         // Initial run (starts from START)
-        let result = await app.invoke(currentState, configWithThread);
+        const result = await app.invoke(currentState, configWithThread);
         
         // Because we have interruptsBefore: ["writer"], the graph will stop after planner.
         // In a real CLI, we'd check for the interrupt and prompt the user.

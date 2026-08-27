@@ -20,7 +20,7 @@ export const WorkflowStateSchema = new StateSchema({
         // Infrastructure target and deployment configurations
         infrastructure: z.object({
             target: z.string().optional(), // e.g., "Vercel", "AWS", "Docker"
-            config: z.record(z.any()).optional(),
+            config: z.record(z.any(), z.any()).optional(),
         }).optional(),
         // Sandbox status and paths
         sandbox: z.object({

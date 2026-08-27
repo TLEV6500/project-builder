@@ -5,7 +5,8 @@
         "build": "tsc",
         "start": "bun dist/index.js",
         "dev": "bun run build && bun run start",
-        "workflow": "bun src/index.ts"
+        "workflow": "bun src/index.ts",
+        "lint": "bunx eslint ."
     },
     "dependencies": {
         "@langchain/anthropic": "^1.5.7",
@@ -24,6 +25,7 @@
     "devDependencies": {
         "@tlev/eslint": "workspace:*",
         "@tlev/typescript": "workspace:*",
-        "eslint": "^10.8.1"
+        "eslint": "^10.8.1",
+        "jiti": "^2.7.0"
     }
 }

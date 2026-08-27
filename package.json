@@ -4,12 +4,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-      "rebuild:pi-sandbox": "docker build -f Dockerfile.pi -t bun-agent-sandbox .",
-      "agent:pull-docs": "bun run .ai-agent/scripts/scraper/run.ts",
-      "agent:sync-all": "bun run .ai-agent/scripts/scraper/batch-update.ts"
+    "rebuild:pi-sandbox": "docker build -f Dockerfile.pi -t bun-agent-sandbox .",
+    "agent:pull-docs": "bun run .ai-agent/scripts/scraper/run.ts",
+    "agent:sync-all": "bun run .ai-agent/scripts/scraper/batch-update.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "eslint": "^10.9.1",
+    "jiti": "^2.7.0"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -18,7 +20,7 @@
     "langchain": "^1.5.10",
     "turbo": "^2.10.10"
   },
-  "packageManager": "bun",
+  "packageManager": "bun@1.2.0",
   "workspaces": [
     "packages/*",
     "apps/*"

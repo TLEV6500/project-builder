@@ -2,10 +2,10 @@ import { BaseLanguageModel } from "@langchain/core/language_models/base";
 import { AIMessageChunk, BaseMessage } from "@langchain/core/messages";
 import { RunnableConfig } from "@langchain/core/runnables";
 import * as logger from "./debugger";
-import { CONFIGURABLE_FIELDS, prefixField, PrefixField } from "@/model/types";
+import { CONFIGURABLE_FIELDS } from "@/model/types";
 
 
-let modelOutputTokenCount = { response: 0, reasoning: 0 }
+const modelOutputTokenCount = { response: 0, reasoning: 0 };
 
 /**
  * 1. Repurposed Atomic Event Dispatcher

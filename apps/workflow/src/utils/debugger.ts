@@ -13,7 +13,7 @@ const logMetrics = new Map<string, {
 let rateLimitOption: "time" | "qty" = "time"
 let rateLimitFactor = 5_000
 
-const isRateLimitTriggered = (...[title, _message]: Parameters<typeof deferLog>) => {
+const isRateLimitTriggered = (title: string) => {
     const log = logMetrics.get(title)
     if (!log) return false;
     if (log.currentRateLimitStrat === "time") return Date.now() - log.time! < rateLimitFactor
@@ -41,8 +41,8 @@ function updateLogMetric(title: string) {
     }
 }
 
-export const deferLog = (title: string, message: any) => {
-    if (isRateLimitTriggered(title, message)) return;
+export const deferLog = (title: string, message: unknown) => {
+    if (isRateLimitTriggered(title)) return;
     logQueue.push({ key: title, value: JSON.stringify(message) })
     updateLogMetric(title)
 }

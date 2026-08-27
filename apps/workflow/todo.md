@@ -22,11 +22,17 @@
 - [x] **Graph Topology**: Convert the linear flow (`START` -> `planner` -> `writer` -> `publisher` -> `END`) to a conditional graph allowing user review/approval of the plan before execution.
 
 ## 🧪 Validation & Refinement
-- [ ] Refactor `GraphConfig` to source model configurations (API keys, Base URLs, Model names) from environment variables instead of hardcoded literals.
-- [ ] End-to-end validation of the Sandbox $\rightarrow$ Publisher handoff:
+- [x] Refactor `GraphConfig` to source model configurations (API keys, Base URLs, Model names) from environment variables instead of hardcoded literals.
+- [x] End-to-end validation of the Sandbox $\rightarrow$ Publisher handoff:
     - Verify file structure matches generated plan.
     - Ensure sandbox paths are correctly passed to the publisher.
     - Confirm `gh` CLI successfully pushes the sandbox content.
+- [x] Implement unit tests for `plannerNode` using Bun test.
+- [x] Implement unit tests for `writerNode` using Bun test.
+- [x] Implement unit tests for `publisherNode` using Bun test.
+- [x] Implement integration tests for the `createWorkflow` graph.
+- [x] Fix type and linting errors identified by `bunx eslint .`.
+
 
 ## 💻 Integration & CLI
 - [x] Update `src/index.ts` to handle interactive CLI inputs (prompting for tech stack, infra, etc.) instead of a single one-way question.

@@ -65,5 +65,5 @@ export type PrefixField<P extends string, F extends ConfigurableField> = `${P}_$
 
 
 export type PrefixedConfigurables<Prefix extends string, Fields extends ConfigurableField> = {
-    [K in Fields as PrefixField<Prefix, K>]?: any;
+    [K in Fields as PrefixField<Prefix, K>]?: unknown;
 };

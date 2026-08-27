@@ -37,6 +37,27 @@
         "lint": {
             "dependsOn": [
                 "^lint"
+            ],
+            "env": [
+                "PLANNER_MODEL_PROVIDER",
+                "PLANNER_MODEL",
+                "PLANNER_API_KEY",
+                "PLANNER_BASE_URL",
+                "PLANNER_TEMPERATURE",
+                "PLANNER_STREAMING",
+                "WRITER_MODEL_PROVIDER",
+                "WRITER_MODEL",
+                "WRITER_API_KEY",
+                "WRITER_BASE_URL",
+                "WRITER_TEMPERATURE",
+                "WRITER_STREAMING",
+                "PUBLISHER_MODEL_PROVIDER",
+                "PUBLISHER_MODEL",
+                "PUBLISHER_API_KEY",
+                "PUBLISHER_BASE_URL",
+                "PUBLISHER_TEMPERATURE",
+                "PUBLISHER_STREAMING",
+                "GITHUB_USERNAME"
             ]
         },
         "dev": {

@@ -1,16 +1,11 @@
-import { BaseFields, CONFIGURABLE_MODEL_FIELDS } from "@/model";
+import { BaseFields } from "@/model";
 import { PrefixedConfigurables } from "@/model/types";
 import { WorkflowState, WorkflowUpdate } from "@/schemas";
-import { RunnableConfig } from "@langchain/core/runnables";
 import { execSync } from "child_process";
 
 export type PublisherConfigFields = PrefixedConfigurables<"publisher", BaseFields>
 
-type PublisherConfig = RunnableConfig & {
-    configurable?: PublisherConfigFields
-}
-
-export const publisherNode = async (state: WorkflowState, config: PublisherConfig): Promise<WorkflowUpdate> => {
+export const publisherNode = async (state: WorkflowState): Promise<WorkflowUpdate> => {
     const { project } = state;
     if (!project.sandbox?.rootPath) {
         return {
@@ -40,10 +35,11 @@ export const publisherNode = async (state: WorkflowState, config: PublisherConfi
                 repoUrl: `https://github.com/${process.env.GITHUB_USERNAME || 'user'}/${repoName}`
             }
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
         console.error("Publisher Error:", error);
         return {
-            messages: [{ content: `Error publishing to GitHub: ${error.message}`, role: "assistant" }]
+            messages: [{ content: `Error publishing to GitHub: ${errorMessage}`, role: "assistant" }]
         }
     } finally {
         // Return to a safe directory to avoid locking the sandbox if needed

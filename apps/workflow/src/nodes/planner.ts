@@ -38,7 +38,8 @@ const plannerPrompt = ChatPromptTemplate.fromMessages([
     ["system", `You are an expert Software Architect. Your goal is to generate a detailed project blueprint based on the user's request.
 
     You must output your response as a valid JSON object that matches the following schema:
-    ${JSON.stringify(BlueprintSchema.shape)}
+    
+    ${JSON.stringify(BlueprintSchema.shape).replace(/{/g, '{{').replace(/}/g, '}}')}
 
     The blueprint should include:
     1. A complete file tree (structure) with paths and descriptions.
@@ -71,7 +72,7 @@ export const plannerNode = async (state: WorkflowState, config: PlannerConfig): 
                 architecturalNotes: blueprint.architecturalNotes,
             }
         }
-    } catch (e) {
+    } catch (e: unknown) {
         console.error("Failed to parse blueprint JSON:", e);
         return {
             messages: ["Failed to generate a valid project blueprint. Please try again."]

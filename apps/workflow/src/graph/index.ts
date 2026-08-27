@@ -1,6 +1,6 @@
 import { StateGraph, START, END } from "@langchain/langgraph";
 import { plannerNode, writerNode, publisherNode } from "@/nodes/index";
-import { WorkflowState, WorkflowStateSchema } from "@/schemas";
+import { WorkflowStateSchema } from "@/schemas";
 import { PlannerConfigFields } from "../nodes/planner";
 import { WriterConfigFields } from "../nodes/writer";
 import { PublisherConfigFields } from "../nodes/publisher";

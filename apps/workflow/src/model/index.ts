@@ -1,5 +1,5 @@
-import { CONFIGURABLE_FIELDS, defineFields, PrefixedConfigurables } from "./types"
-import { RunnableConfig } from "@langchain/core/runnables";
+import { CONFIGURABLE_FIELDS, defineFields } from "./types"
+
 
 
 export const CONFIGURABLE_MODEL_FIELDS = defineFields([
