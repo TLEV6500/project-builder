@@ -20,6 +20,12 @@
 - [x] **Writer Node**: Implement as a file-system executor that creates the project structure in the secure sandbox.
 - [x] **Publisher Node**: Implement logic to interface with GitHub CLI for repo initialization, committing, and pushing.
 - [x] **Graph Topology**: Convert the linear flow (`START` -> `planner` -> `writer` -> `publisher` -> `END`) to a conditional graph allowing user review/approval of the plan before execution.
+- [ ] **Loopback Strategy**: Decide and implement the loopback mechanism:
+    - Option A: `writer` $\rightarrow$ `planner` (after scaffolding is created but config files need content).
+    - Option B: `publisher` $\rightarrow$ `planner` (for generating config contents before final push).
+    - Ensure all loops are gated by user approval.
+- [ ] **Autonomous Research**: Implement `researchNode` to give the `planner` node online researching capabilities.
+- [ ] **Publication Approval**: Implement a final user approval step before the `publisher` node pushes to GitHub, allowing revisions to repo metadata.
 
 ## 🧪 Validation & Refinement
 - [x] Refactor `GraphConfig` to source model configurations (API keys, Base URLs, Model names) from environment variables instead of hardcoded literals.
